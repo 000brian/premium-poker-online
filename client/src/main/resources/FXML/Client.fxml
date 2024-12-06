@@ -16,8 +16,12 @@
     </center>
     <bottom>
         <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="messageField" promptText="Enter message to send"/>
-            <Button fx:id="sendButton" text="Send" onAction="#sendMessage"/>
+            <TextField fx:id="pairPlusField" promptText="Pair plus wager"/>
+            <TextField fx:id="anteField" promptText="Ante bet wager"/>
+            <TextField fx:id="playField" promptText="Play wager"/>
+            <Button fx:id="pairAnteButton" text="Send pair+ante" onAction="#sendPairAnte"/>
+            <Button fx:id="playButton" text="Play"/>
+            <Button fx:id="foldButton" text="Fold"/>
         </HBox>
     </bottom>
 </BorderPane>

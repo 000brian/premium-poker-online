@@ -20,14 +20,17 @@ public class ServerController {
     private ArrayList<String> serverList = new ArrayList<>();
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+
+    private PokerInfo pokerInfo;
+    private Dealer dealer;
 
     @FXML
     private void initialize() {
         observableList = FXCollections.observableArrayList(serverList);
         listView.setItems(observableList);
-        sendButton.setDisable(true);
+        dealer = new Dealer();
     }
 
     @FXML
@@ -39,19 +42,57 @@ public class ServerController {
                 serverSocket = new ServerSocket(port);
                 updateList("Server started on port " + port);
                 clientSocket = serverSocket.accept();
-                updateList("Client connected");
+                updateList("Client has connected. Player, make your ante and pair plus wagers.");
 
-                reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                ois = new ObjectInputStream(clientSocket.getInputStream());
+                clientSocket.setTcpNoDelay(true);
 
-                sendButton.setDisable(false);
+                pokerInfo = new PokerInfo();
+                oos.writeObject(pokerInfo);
 
-                String message;
-                while ((message = reader.readLine()) != null) {
-                    serverList.add("Client: " + message);
-                    updateListView();
+                while (true)
+                {
+                    // Bullshit I have to do to read a PokerInfo from ois
+                    Object obj = new Object();
+                    try
+                    {
+                        obj = ois.readObject();
+                    } catch (ClassNotFoundException e)
+                    {
+                        System.out.println("somehow the object read from ois was not a PokerInfo");
+                    }
+                    if (obj instanceof PokerInfo)
+                    {
+                        pokerInfo = (PokerInfo) obj;
+                    }
+
+                    // Doing things based on what game stage it is
+                    if (pokerInfo.getGameStage() == 1)
+                    {
+
+                        System.out.println("pair: " + pokerInfo.getPlayer().getPairPlusBet());
+                        System.out.println("ante: " + pokerInfo.getPlayer().getAnteBet());
+                        System.out.println("its time to deal cards!");
+
+                        // Giving out cards to both players
+                        dealer.setHand(dealer.dealHand());
+                        ArrayList<Card> dealerHand = dealer.getHand();
+                        ArrayList<Card> playerHand = dealer.dealHand();
+
+                        pokerInfo.getPlayer().setHand(playerHand);
+                        pokerInfo.setDealersHand(dealerHand);
+                        pokerInfo.setGameStage(2);
+
+                        try {
+                            oos.writeObject(pokerInfo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,12 +100,15 @@ public class ServerController {
     }
 
     @FXML
-    private void sendMessage() {
+    private void sendMessage(PokerInfo pokerInfo) {
         String message = messageField.getText();
-        serverList.add("Server: " + message);
+        serverList.add("Server sent pokerInfo:" + pokerInfo.toString());
         updateListView();
-        writer.println(message);
-        messageField.clear();
+        try {
+            oos.writeObject(pokerInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateList(String message) {
@@ -76,5 +120,13 @@ public class ServerController {
 
     private void updateListView() {
         Platform.runLater(() -> observableList.setAll(serverList));
+    }
+
+    private void printHand(ArrayList<Card> hand)
+    {
+        for(Card card : hand)
+        {
+            System.out.print(card.toString() + " ");
+        }
     }
 }

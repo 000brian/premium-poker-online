@@ -10,23 +10,28 @@ import java.util.ArrayList;
 public class ClientController {
 
     @FXML
-    private TextField addressField, messageField;
+    private TextField addressField, pairPlusField, anteField, playField;
     @FXML
-    private Button connectButton, sendButton;
+    private Button connectButton, pairAnteButton, playButton, foldButton;
     @FXML
     private ListView<String> listView;
 
     private ObservableList<String> observableList;
     private ArrayList<String> clientList = new ArrayList<>();
     private Socket socket;
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+
+    private Player player;
+    private PokerInfo pokerInfo;
 
     @FXML
     private void initialize() {
         observableList = FXCollections.observableArrayList(clientList);
         listView.setItems(observableList);
-        sendButton.setDisable(true);
+        Player player = new Player();
+        pairAnteButton.setDisable(true);
+        playButton.setDisable(true);
     }
 
     @FXML
@@ -38,32 +43,87 @@ public class ClientController {
         new Thread(() -> {
             try {
                 socket = new Socket(ip, port);
-                updateList("Connected to server");
+                updateList("Player connected to server.");
 
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                writer = new PrintWriter(socket.getOutputStream(), true);
+                oos = new ObjectOutputStream(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
+                socket.setTcpNoDelay(true);
 
-                sendButton.setDisable(false);
+                while (true)
+                {
+                    // Bullshit I have to do to read a PokerInfo from ois
+                    Object obj = new Object();
+                    try
+                    {
+                        obj = ois.readObject();
+                    } catch (ClassNotFoundException e)
+                    {
+                        System.out.println("somehow the object read from ois was not a PokerInfo");
+                    }
+                    if (obj instanceof PokerInfo) {
+                        pokerInfo = (PokerInfo) obj;
+                    }
 
-                String message;
-                while ((message = reader.readLine()) != null) {
-                    clientList.add("Server: " + message);
-                    updateListView();
+                    // Doing things based on what game stage it is
+                    if (pokerInfo.getGameStage() == 0)
+                    {
+                        System.out.println("heelo i am client i need to make ante + play lmfao");
+                        pairAnteButton.setDisable(false);
+                        playButton.setDisable(true);
+                        foldButton.setDisable(true);
+                    }
+                    else if (pokerInfo.getGameStage() == 2)
+                    {
+
+                        pairAnteButton.setDisable(false);
+                        foldButton.setDisable(false);
+                        playButton.setDisable(false);
+
+                        System.out.println("i need to fold or play!");
+                        System.out.println("player cards");
+                        System.out.println(pokerInfo.getPlayer().getHand().toString());
+                        System.out.println("dealer cards");
+                        System.out.println(pokerInfo.getDealersHand().toString());
+                    }
+
+
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+
+                System.out.println(ip + ":" + port + " is invalid. Please try another address.");
+
             }
         }).start();
     }
 
+    // This gets called when the pair+ante button is clicked.
+    // It updates the game info on our end, and sends over an updated PokerInfo.
+    // When the server sees gameStage == 1, it will deal cards.
     @FXML
-    private void sendMessage() {
-        String message = messageField.getText();
-        clientList.add("Client: " + message);
+    private void sendPairAnte() {
+        int anteBet = Integer.parseInt(anteField.getText());
+        int pairBet = Integer.parseInt(pairPlusField.getText());
+
+        // TODO: add logic for checking if bets are valid numbers
+
+        // I did this in initialize() but i guess it disappeared bc without this i get a null pointer exception?
+        Player player = new Player();
+
+        player.setAnteBet(anteBet);
+        player.setPairPlusBet(pairBet);
+        player.setBalance(player.getBalance() - player.getAnteBet() - player.getAnteBet());
+        pokerInfo.setPlayer(player);
+        pokerInfo.setGameStage(1);
+
+        clientList.add("Player made pair bet: " + pairBet + " and ante bet: " + anteBet);
         updateListView();
-        writer.println(message);
-        messageField.clear();
+
+        try {
+            oos.writeObject(pokerInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateList(String message) {
@@ -76,4 +136,13 @@ public class ClientController {
     private void updateListView() {
         Platform.runLater(() -> observableList.setAll(clientList));
     }
+
+    private void printHand(ArrayList<Card> hand)
+    {
+        for(Card card : hand)
+        {
+            System.out.print(card.toString() + " ");
+        }
+    }
+
 }

@@ -17,7 +17,7 @@
     <bottom>
         <HBox spacing="10" alignment="CENTER">
             <TextField fx:id="messageField" promptText="Enter message to send"/>
-            <Button fx:id="sendButton" text="Send" onAction="#sendMessage"/>
+            <Button fx:id="sendButton" text="Send"/>
         </HBox>
     </bottom>
 </BorderPane>
