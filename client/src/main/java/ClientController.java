@@ -10,9 +10,9 @@ import java.util.ArrayList;
 public class ClientController {
 
     @FXML
-    private TextField addressField, pairPlusField, anteField, playField;
+    private TextField addressField, pairPlusField, anteField, playField, portNumberInput, ipAddressInput;
     @FXML
-    private Button connectButton, pairAnteButton, playButton, foldButton;
+    private Button connectButton, pairAnteButton, playButton, foldButton, joinServerButton, exiButton;
     @FXML
     private ListView<String> listView;
 

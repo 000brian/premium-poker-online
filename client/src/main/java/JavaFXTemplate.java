@@ -24,10 +24,10 @@ public class JavaFXTemplate extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("client");
-		Parent root = FXMLLoader.load(getClass().getResource("FXML/Client.fxml"));
+		primaryStage.setTitle("Premium Poker Online");
+		Parent root = FXMLLoader.load(getClass().getResource("FXML/Welcome.fxml"));
 
-		Scene scene = new Scene(root, 400, 300);
+		Scene scene = new Scene(root, 800, 600);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
