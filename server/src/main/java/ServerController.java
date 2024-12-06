@@ -68,6 +68,8 @@ public class ServerController {
                     }
 
                     // Doing things based on what game stage it is
+
+                    // Deal cards
                     if (pokerInfo.getGameStage() == 1)
                     {
 
@@ -78,6 +80,7 @@ public class ServerController {
                         // Giving out cards to both players
                         dealer.setHand(dealer.dealHand());
                         ArrayList<Card> dealerHand = dealer.getHand();
+                        dealerHand = flipAllCards(dealerHand);
                         ArrayList<Card> playerHand = dealer.dealHand();
 
                         pokerInfo.getPlayer().setHand(playerHand);
@@ -89,6 +92,62 @@ public class ServerController {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
+                    }
+
+                    // Evaluate play wager
+                    if (pokerInfo.getGameStage() == 3)
+                    {
+                        flipAllCards(pokerInfo.getDealersHand());
+
+                        Player player = pokerInfo.getPlayer();
+                        System.out.println("player cards");
+                        System.out.println(player.getHand().toString());
+                        System.out.println("dealer cards");
+                        System.out.println(pokerInfo.getDealersHand().toString());
+
+                        // Evaluate hand and return
+                        if (checkQueenOrBetter(pokerInfo.getDealersHand()))
+                        {
+
+                            // Evaluating pair plus winnings
+                            int pairPlusWinnings = ThreeCardLogic.evalPPWinnings(player.getHand(), player.getPairPlusBet());
+                            player.setBalance(player.getBalance() + pairPlusWinnings);
+                            System.out.println("Pair plus evaluated: " + pairPlusWinnings + " made and returned to balance");
+                            System.out.println("Balance: " + player.getBalance());
+
+                            // Evaluating if dealer or player won
+                            int winner = ThreeCardLogic.compareHands(pokerInfo.getDealersHand(), player.getHand());
+                            if (winner == 1)
+                            {
+                                System.out.println("Dealer won.");
+                                System.out.println("Balance: " + player.getBalance());
+
+                            }
+                            else
+                            {
+                                System.out.println("Player won.");
+                                player.setBalance(player.getBalance() + (player.getAnteBet() + player.getPlayBet()) * 2);
+                                System.out.println("Balance: " + player.getBalance());
+                            }
+
+                            pokerInfo.setPlayer(player);
+
+                            try {
+                                oos.writeObject(pokerInfo);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        else
+                        {
+                            System.out.println("Dealer doesn't have queen or better.");
+                            System.out.println("Restarting bets, locking ante");
+
+                            // TODO : Handle if not queen or better
+                        }
+
 
                     }
 
@@ -129,4 +188,28 @@ public class ServerController {
             System.out.print(card.toString() + " ");
         }
     }
+
+    // Returns identical ArrayList<Card>, only all are flipped
+    private ArrayList<Card> flipAllCards(ArrayList<Card> hand)
+    {
+        ArrayList<Card> flippedHand = hand;
+        for(Card card : flippedHand)
+        {
+            card.flip();
+        }
+        return flippedHand;
+    }
+
+    // Returns if hand has queen or better
+    private boolean checkQueenOrBetter(ArrayList<Card> hand) {
+        for (Card card : hand) {
+            if (card.getValue() >= 12) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
+
+

@@ -11,6 +11,7 @@ public class PokerInfo implements Serializable
     0 : player needs to make play + ante
     1 : dealer needs to deal cards
     2 : player makes play wager or folds
+    3 : show cards and evaluate bets
     */
 
     PokerInfo()

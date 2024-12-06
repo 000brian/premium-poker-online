@@ -71,6 +71,12 @@ public class ClientController {
                         pairAnteButton.setDisable(false);
                         playButton.setDisable(true);
                         foldButton.setDisable(true);
+
+                        if (pokerInfo.getPlayer().isAnteLocked())
+                        {
+                            // TODO : Lock ante bet
+                        }
+
                     }
                     else if (pokerInfo.getGameStage() == 2)
                     {
@@ -78,12 +84,19 @@ public class ClientController {
                         pairAnteButton.setDisable(false);
                         foldButton.setDisable(false);
                         playButton.setDisable(false);
+                        playField.setDisable(false);
 
                         System.out.println("i need to fold or play!");
                         System.out.println("player cards");
                         System.out.println(pokerInfo.getPlayer().getHand().toString());
                         System.out.println("dealer cards");
                         System.out.println(pokerInfo.getDealersHand().toString());
+
+
+                    }
+                    else if (pokerInfo.getGameStage() == 4)
+                    {
+                        System.out.println("finished");
                     }
 
 
@@ -126,8 +139,35 @@ public class ClientController {
         }
     }
 
-    private void updateList(String message) {
-        Platform.runLater(() -> {
+    @FXML
+    private void fold()
+    {
+        // dont do anything and just restart
+    }
+
+    @FXML
+    private void play()
+    {
+        int playBet = Integer.parseInt(playField.getText());
+        player.setPlayBet(playBet);
+        // TODO: check if play bet is equal to ante, if not prompt to retry
+        player.setBalance(player.getBalance() - player.getPlayBet());
+        pokerInfo.setPlayer(player);
+        pokerInfo.setGameStage(3);
+        try {
+            oos.writeObject(pokerInfo);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void updateList(String message)
+    {
+        Platform.runLater(() ->
+        {
             clientList.add(message);
             updateListView();
         });
