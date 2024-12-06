@@ -22,16 +22,16 @@ public class ClientController {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    private Player player;
+    private Player player = new Player();
     private PokerInfo pokerInfo;
 
     @FXML
     private void initialize() {
         observableList = FXCollections.observableArrayList(clientList);
         listView.setItems(observableList);
-        Player player = new Player();
         pairAnteButton.setDisable(true);
         playButton.setDisable(true);
+        foldButton.setDisable(true);
     }
 
     @FXML
@@ -96,7 +96,15 @@ public class ClientController {
                     }
                     else if (pokerInfo.getGameStage() == 4)
                     {
-                        System.out.println("finished");
+                        System.out.println("you win!");
+                        System.out.println("total winnings: " + pokerInfo.getPlayer().getBalance());
+
+                    }
+                    else if (pokerInfo.getGameStage() == 5)
+                    {
+                        System.out.println("you losttt lmfao");
+                        System.out.println("total LOSSES: " + pokerInfo.getPlayer().getBalance());
+
                     }
 
 
@@ -140,14 +148,22 @@ public class ClientController {
     }
 
     @FXML
-    private void fold()
+    private void sendFold()
     {
-        // dont do anything and just restart
+        // Over on the server, it will just see this
+        // and send a pokerInfo with gameStage 5 back
+        pokerInfo.setGameStage(5);
+        try {
+            oos.writeObject(pokerInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void play()
+    private void sendPlay()
     {
+        player = pokerInfo.getPlayer();
         int playBet = Integer.parseInt(playField.getText());
         player.setPlayBet(playBet);
         // TODO: check if play bet is equal to ante, if not prompt to retry

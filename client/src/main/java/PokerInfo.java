@@ -11,14 +11,16 @@ public class PokerInfo implements Serializable
     0 : player needs to make play + ante
     1 : dealer needs to deal cards
     2 : player makes play wager or folds
-    3 : show cards and evaluate bets
+    3 : play wager is evaluated
+    4 : win screen
+    5 : loss screen
     */
 
     PokerInfo()
     {
         player = new Player(); // will be updated by both
         dealersHand = new ArrayList<Card>(); // should be set by server
-        int gameStage = 0;
+        int gameStage = -1;
     }
     public String toString()
     {

@@ -20,8 +20,8 @@
             <TextField fx:id="anteField" promptText="Ante bet wager"/>
             <TextField fx:id="playField" promptText="Play wager"/>
             <Button fx:id="pairAnteButton" text="Send pair+ante" onAction="#sendPairAnte"/>
-            <Button fx:id="playButton" text="Play"/>
-            <Button fx:id="foldButton" text="Fold"/>
+            <Button fx:id="playButton" text="Play" onAction="#sendPlay"/>
+            <Button fx:id="foldButton" text="Fold" onAction = "#sendFold"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -122,6 +122,7 @@ public class ServerController {
                             {
                                 System.out.println("Dealer won.");
                                 System.out.println("Balance: " + player.getBalance());
+                                pokerInfo.setGameStage(4);
 
                             }
                             else
@@ -129,15 +130,10 @@ public class ServerController {
                                 System.out.println("Player won.");
                                 player.setBalance(player.getBalance() + (player.getAnteBet() + player.getPlayBet()) * 2);
                                 System.out.println("Balance: " + player.getBalance());
+                                pokerInfo.setGameStage(5);
                             }
 
-                            pokerInfo.setPlayer(player);
 
-                            try {
-                                oos.writeObject(pokerInfo);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
 
                         }
                         else
@@ -146,9 +142,29 @@ public class ServerController {
                             System.out.println("Restarting bets, locking ante");
 
                             // TODO : Handle if not queen or better
+                            player.setAnteLocked(true);
+                            player.setPairPlusBet(0);
+                            player.setPlayBet(0);
+                            pokerInfo.setGameStage(0);
+
                         }
 
+                        pokerInfo.setPlayer(player);
 
+                        try {
+                            oos.writeObject(pokerInfo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    else if (pokerInfo.getGameStage() == 5)
+                    {
+                        try {
+                            oos.writeObject(pokerInfo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 }
