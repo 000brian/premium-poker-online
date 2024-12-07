@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <MenuBar fx:id="theMenubar" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu fx:id="theMenu" mnemonicParsing="false" text="Options">
+            <items>
+              <MenuItem fx:id="freshStartButton" mnemonicParsing="false" text="Fresh Start" />
+                  <MenuItem fx:id="newLookButton" mnemonicParsing="false" text="New Look" />
+                  <MenuItem fx:id="exitButton" mnemonicParsing="false" text="Exit" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TextField alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="240.0" text="Game Information">
+               <GridPane.margin>
+                  <Insets bottom="160.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </TextField>
+            <TextArea fx:id="gameInfo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="240.0">
+               <GridPane.margin>
+                  <Insets left="10.0" right="10.0" top="30.0" />
+               </GridPane.margin>
+            </TextArea>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current Balance:" textAlignment="CENTER" wrappingWidth="269.2294921875" GridPane.rowIndex="2">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="150.0" top="30.0" />
+               </GridPane.margin>
+            </Text>
+            <TextField fx:id="currentBalance" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" text="00.00 $" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Cantarell Regular" size="36.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="30.0" />
+               </GridPane.margin>
+            </TextField>
+            <Rectangle arcHeight="100.0" arcWidth="10.0" height="313.0" stroke="TRANSPARENT" strokeLineCap="BUTT" strokeLineJoin="BEVEL" strokeType="INSIDE" width="269.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.42485549132947986">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color red="0.7352468371391296" green="0.2529696524143219" blue="0.7434210777282715" />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color opacity="0.0" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <TextField fx:id="pairPlus" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Cantarell Regular" size="36.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="65.0" top="90.0" />
+               </GridPane.margin>
+            </TextField>
+            <TextField fx:id="anteBet" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Cantarell Regular" size="36.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="75.0" left="65.0" />
+               </GridPane.margin>
+            </TextField>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pair Plus:" textAlignment="CENTER" wrappingWidth="269.2294921875" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets top="20.0" />
+               </GridPane.margin>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ante:" textAlignment="CENTER" wrappingWidth="269.2294921875" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="140.0" />
+               </GridPane.margin>
+            </Text>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="110.0" top="170.0" />
+               </GridPane.margin>
+            </Button>
+            <Label alignment="BOTTOM_CENTER" prefHeight="161.0" prefWidth="266.0" text="Your Statistics" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font name="DejaVuMathTeXGyre-Regular" size="24.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="playerStats" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="200.0" text="Ante:&#10;Pair Plus:&#10;Play:" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets left="30.0" />
+               </GridPane.margin>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextArea>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>
