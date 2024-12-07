@@ -57,7 +57,7 @@ public class ClientController extends Application
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
+    // dont know why i added this this does jack shit
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
@@ -81,6 +81,8 @@ public class ClientController extends Application
     {
         int port = Integer.parseInt(portNumberInput.getText());
         String ip = ipAddressInput.getText();
+
+        // This is how you switch a scene.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/Client.fxml"));
         Parent root = loader.load();
         primaryStage.getScene().setRoot(root);
@@ -92,7 +94,7 @@ public class ClientController extends Application
                 socket = new Socket(ip, port);
 
 
-                // For the Client.fxml
+                // For the Client.fxml, replace these when you have the actual ui implemented
                 observableList = FXCollections.observableArrayList(clientList);
                 listView.setItems(observableList);
                 pairAnteButton.setDisable(true);
@@ -125,6 +127,8 @@ public class ClientController extends Application
                     if (pokerInfo.getGameStage() == 0)
                     {
                         System.out.println("heelo i am client i need to make ante + play lmfao");
+
+                        // TODO: These are from old placeholder UI
                         pairAnteButton.setDisable(false);
                         playButton.setDisable(true);
                         foldButton.setDisable(true);
@@ -137,6 +141,7 @@ public class ClientController extends Application
                     } else if (pokerInfo.getGameStage() == 2)
                     {
 
+                        // TODO: These are from old placeholder UI
                         pairAnteButton.setDisable(false);
                         foldButton.setDisable(false);
                         playButton.setDisable(false);
@@ -152,11 +157,13 @@ public class ClientController extends Application
                     } else if (pokerInfo.getGameStage() == 4)
                     {
                         System.out.println("you win!");
+                        // TODO: change scene to win screen
                         System.out.println("total winnings: " + pokerInfo.getPlayer().getBalance());
 
                     } else if (pokerInfo.getGameStage() == 5)
                     {
                         System.out.println("you losttt lmfao");
+                        // TODO: change scene to lose screen
                         System.out.println("total LOSSES: " + pokerInfo.getPlayer().getBalance());
 
                     }
@@ -186,7 +193,8 @@ public class ClientController extends Application
 
         // TODO: add logic for checking if bets are valid numbers
 
-        // I did this in initialize() but i guess it disappeared bc without this i get a null pointer exception?
+        // I did this in initialize() but i guess it disappeared bc without this i get a null pointer exception
+        // may cause problems when trying to restart round in case of the player folding
         Player player = new Player();
 
         player.setAnteBet(anteBet);
