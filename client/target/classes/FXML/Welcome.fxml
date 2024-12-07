@@ -7,7 +7,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+
+<VBox fx:id="root" alignment="CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientController">
   <children>
     <Text fx:id="title" layoutX="112.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Premium Poker" textAlignment="CENTER" wrappingWidth="578.35888671875">
       <font>
@@ -20,7 +21,7 @@
           <Region prefHeight="10.0" prefWidth="200.0" />
           <TextField fx:id="ipAddressInput" alignment="CENTER" prefWidth="200.0" promptText="IP Address" />
           <Region prefHeight="10.0" prefWidth="200.0" />
-          <Button fx:id="joinServerButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="200.0" text="Join Server" />
+          <Button fx:id="joinServerButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="200.0" text="Join Server" onAction="#connectToServer" />
           <Region prefHeight="10.0" prefWidth="200.0" />
           <Button fx:id="exitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="200.0" text="Exit" />
          </children>

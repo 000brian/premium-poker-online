@@ -2,17 +2,27 @@ import javafx.fxml.FXML;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import javafx.application.Application;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-public class ClientController {
 
+
+public class ClientController extends Application
+{
+
+    private Stage primaryStage;
     @FXML
     private TextField addressField, pairPlusField, anteField, playField, portNumberInput, ipAddressInput;
     @FXML
-    private Button connectButton, pairAnteButton, playButton, foldButton, joinServerButton, exiButton;
+    private Button connectButton, pairAnteButton, playButton, foldButton, joinServerButton, exitButton;
     @FXML
     private ListView<String> listView;
 
@@ -25,25 +35,71 @@ public class ClientController {
     private Player player = new Player();
     private PokerInfo pokerInfo;
 
+
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        launch(args);
+    }
+    Scene scene;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Premium Poker Online");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/Welcome.fxml"));
+        Parent root = loader.load();
+
+        ClientController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+
+        scene = new Scene(root, 800, 600);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
     @FXML
-    private void initialize() {
+    private void initialize()
+    {
+        /*
         observableList = FXCollections.observableArrayList(clientList);
         listView.setItems(observableList);
         pairAnteButton.setDisable(true);
         playButton.setDisable(true);
         foldButton.setDisable(true);
+        */
+
     }
 
+
     @FXML
-    private void connectToServer() {
-        String[] address = addressField.getText().split(":");
-        String ip = address[0];
-        int port = Integer.parseInt(address[1]);
-        connectButton.setDisable(true);
-        new Thread(() -> {
-            try {
+    private void connectToServer() throws Exception
+    {
+        int port = Integer.parseInt(portNumberInput.getText());
+        String ip = ipAddressInput.getText();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/Client.fxml"));
+        Parent root = loader.load();
+        primaryStage.getScene().setRoot(root);
+
+        new Thread(() ->
+        {
+            try
+            {
                 socket = new Socket(ip, port);
-                updateList("Player connected to server.");
+
+
+                // For the Client.fxml
+                observableList = FXCollections.observableArrayList(clientList);
+                listView.setItems(observableList);
+                pairAnteButton.setDisable(true);
+                playButton.setDisable(true);
+                foldButton.setDisable(true);
+
+
 
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
@@ -60,7 +116,8 @@ public class ClientController {
                     {
                         System.out.println("somehow the object read from ois was not a PokerInfo");
                     }
-                    if (obj instanceof PokerInfo) {
+                    if (obj instanceof PokerInfo)
+                    {
                         pokerInfo = (PokerInfo) obj;
                     }
 
@@ -77,8 +134,7 @@ public class ClientController {
                             // TODO : Lock ante bet
                         }
 
-                    }
-                    else if (pokerInfo.getGameStage() == 2)
+                    } else if (pokerInfo.getGameStage() == 2)
                     {
 
                         pairAnteButton.setDisable(false);
@@ -93,14 +149,12 @@ public class ClientController {
                         System.out.println(pokerInfo.getDealersHand().toString());
 
 
-                    }
-                    else if (pokerInfo.getGameStage() == 4)
+                    } else if (pokerInfo.getGameStage() == 4)
                     {
                         System.out.println("you win!");
                         System.out.println("total winnings: " + pokerInfo.getPlayer().getBalance());
 
-                    }
-                    else if (pokerInfo.getGameStage() == 5)
+                    } else if (pokerInfo.getGameStage() == 5)
                     {
                         System.out.println("you losttt lmfao");
                         System.out.println("total LOSSES: " + pokerInfo.getPlayer().getBalance());
@@ -110,19 +164,23 @@ public class ClientController {
 
                 }
 
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
 
                 System.out.println(ip + ":" + port + " is invalid. Please try another address.");
 
             }
         }).start();
+
+
     }
 
     // This gets called when the pair+ante button is clicked.
     // It updates the game info on our end, and sends over an updated PokerInfo.
     // When the server sees gameStage == 1, it will deal cards.
     @FXML
-    private void sendPairAnte() {
+    private void sendPairAnte()
+    {
         int anteBet = Integer.parseInt(anteField.getText());
         int pairBet = Integer.parseInt(pairPlusField.getText());
 
@@ -140,9 +198,11 @@ public class ClientController {
         clientList.add("Player made pair bet: " + pairBet + " and ante bet: " + anteBet);
         updateListView();
 
-        try {
+        try
+        {
             oos.writeObject(pokerInfo);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -153,9 +213,11 @@ public class ClientController {
         // Over on the server, it will just see this
         // and send a pokerInfo with gameStage 5 back
         pokerInfo.setGameStage(5);
-        try {
+        try
+        {
             oos.writeObject(pokerInfo);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -170,7 +232,8 @@ public class ClientController {
         player.setBalance(player.getBalance() - player.getPlayBet());
         pokerInfo.setPlayer(player);
         pokerInfo.setGameStage(3);
-        try {
+        try
+        {
             oos.writeObject(pokerInfo);
         } catch (IOException e)
         {
@@ -189,13 +252,14 @@ public class ClientController {
         });
     }
 
-    private void updateListView() {
+    private void updateListView()
+    {
         Platform.runLater(() -> observableList.setAll(clientList));
     }
 
     private void printHand(ArrayList<Card> hand)
     {
-        for(Card card : hand)
+        for (Card card : hand)
         {
             System.out.print(card.toString() + " ");
         }
